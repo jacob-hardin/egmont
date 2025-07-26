@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investigator Profile</title>
+
+<script>
+function showSidebar() {
+  const sidebar = document.querySelector('.skills-sidebar');
+  const tab = document.getElementById('showSidebarTab');
+  const toggleBtn = document.getElementById('sidebarToggle');
+  sidebar.classList.remove('hidden-sidebar');
+  tab.classList.add('hidden');
+  toggleBtn.textContent = 'Hide Skills';
+}
+
+function toggleNotes(button) {
+  const notes = button.nextElementSibling;
+  notes.classList.toggle('hidden');
+  button.textContent = notes.classList.contains('hidden') ? 'Notes' : 'Hide Notes';
+}
+
+function toggleSidebar() {
+  const sidebar = document.querySelector('.skills-sidebar');
+  const tab = document.getElementById('showSidebarTab');
+  const toggleBtn = document.getElementById('sidebarToggle');
+  sidebar.classList.toggle('hidden-sidebar');
+  if (sidebar.classList.contains('hidden-sidebar')) {
+    toggleBtn.textContent = 'Show Skills';
+    tab.classList.remove('hidden');
+  } else {
+    toggleBtn.textContent = 'Hide Skills';
+    tab.classList.add('hidden');
+  }
+}
+function toggleComments(button) {
+  const comments = button.nextElementSibling;
+  comments.classList.toggle('hidden');
+  if (comments.classList.contains('hidden')) {
+    button.textContent = button.textContent.replace('Hide', 'View');
+  } else {
+    button.textContent = button.textContent.replace('View', 'Hide');
+  }
+}
+
+function toggleSidebar() {
+  const sidebar = document.querySelector('.skills-sidebar');
+  const toggleBtn = document.getElementById('sidebarToggle');
+  sidebar.classList.toggle('hidden-sidebar');
+  if (sidebar.classList.contains('hidden-sidebar')) {
+    toggleBtn.textContent = 'Show Skills';
+  } else {
+    toggleBtn.textContent = 'Hide Skills';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Calculate half and fifth for each skill in sidebar
+  document.querySelectorAll('.skills-sidebar .skill-item').forEach(skillItem => {
+    const percentRaw = skillItem.dataset.percent;
+    const percent = percentRaw === 'Native' ? percentRaw : parseInt(percentRaw, 10) || 0;
+    const half = percentRaw === 'Native' ? '-' : Math.floor(percent / 2);
+    const fifth = percentRaw === 'Native' ? '-' : Math.floor(percent / 5);
+
+    // Color coding for percent
+    let percentClass = 'low';
+    if (percentRaw !== 'Native') {
+      if (percent >= 70) percentClass = 'high';
+      else if (percent >= 40) percentClass = 'medium';
+    } else {
+      percentClass = 'medium';
+    }
+
+    skillItem.innerHTML = `
+      <span class="skill-name" title="Skill name">${skillItem.dataset.name}</span>
+      <span class="skill-percent ${percentClass}" title="Full percentile">${percentRaw === 'Native' ? 'Native' : percent + '%'}</span>
+      <span class="skill-half" title="Half of full percentile (for hard rolls)">${half}</span>
+      <span class="skill-fifth" title="Fifth of full percentile (for extreme rolls)">${fifth}</span>
+    `;
+  });
+});
+
+
+  const sanityInput = document.getElementById("sanityInput");
+  const mythosInput = document.getElementById("mythosInput");
+  const hpInput = document.getElementById("hpInput");
+
+  // Load from local storage
+  sanityInput.value = localStorage.getItem("jesseSanity") || 45;
+  mythosInput.value = localStorage.getItem("jesseMythos") || 12;
+  hpInput.value = localStorage.getItem("jesseHP") || 10;
+
+  // Save on change
+  sanityInput.addEventListener("input", () => {
+    localStorage.setItem("jesseSanity", sanityInput.value);
+  });
+  mythosInput.addEventListener("input", () => {
+    localStorage.setItem("jesseMythos", mythosInput.value);
+  });
+  hpInput.addEventListener("input", () => {
+    localStorage.setItem("jesseHP", hpInput.value);
+  });
+
+</script>
+
+<style>
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    background: #e9ebee;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background-color: #3b5998;
+    color: white;
+    padding: 10px 20px;
+    font-size: 24px;
+    text-align: center;
+  }
+
+  /* Flex container for sidebar + main content */
+  .profile {
+    display: flex;
+    max-width: 1000px;
+    margin: 20px auto;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+  }
+
+  /* Sidebar with all skills grouped */
+  .skills-sidebar {
+    width: 300px;
+    background: #f5f6f7;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    font-size: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    height: 700px;
+    overflow-y: auto;
+    position: sticky;
+    top: 20px;
+    flex-shrink: 0;
+    transition: width 0.3s ease, padding 0.3s ease;
+  }
+
+.show-sidebar-tab {
+  position: fixed;
+  top: 100px;         /* adjust as needed */
+  left: 0;
+  background: #3b5998;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+.show-sidebar-tab:hover {
+  background: #2d4373;
+}
+.hidden {
+  display: none !important;
+}
+  /* Hidden sidebar style */
+  .hidden-sidebar {
+    width: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+  }
+
+  .skills-sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #3b5998;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+  }
+
+  .skills-sidebar ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0 0 20px 0;
+  }
+
+  .skills-sidebar ul li {
+    margin-bottom: 6px;
+  }
+
+  /* Skill item layout */
+  .skill-item {
+    display: grid;
+    grid-template-columns: 1fr 40px 30px 30px;
+    gap: 6px;
+    font-size: 13px;
+    align-items: center;
+    padding: 2px 0;
+    border-bottom: 1px dotted #ccc;
+  }
+
+  .skill-name {
+    font-weight: 600;
+  }
+
+  .skill-percent.high { color: #008000; }       /* green */
+  .skill-percent.medium { color: #c18400; }    /* orange */
+  .skill-percent.low { color: #b22222; }       /* dark red */
+
+  .skill-percent[title],
+  .skill-half[title],
+  .skill-fifth[title] {
+    cursor: help;
+  }
+
+  /* Main content container inside profile */
+  .profile-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease;
+  }
+
+  /* When sidebar hidden, main content full width */
+  .hidden-sidebar + .profile-content {
+    margin-left: 0;
+  }
+
+  /* Toggle button style */
+  #sidebarToggle {
+    margin-bottom: 10px;
+    background: #3b5998;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+  }
+  #sidebarToggle:hover {
+    background: #2d4373;
+  }
+
+  .cover-photo {
+    background: url('https://images.unsplash.com/photo-1581365749336-f203fb31f2d1?crop=entropy&cs=tinysrgb&fit=max&h=200&w=800') center/cover no-repeat;
+    height: 200px;
+  }
+  .profile-info {
+    display: flex;
+    padding: 20px 0;
+  }
+  .profile-pic {
+    width: 150px;
+    height: 150px;
+    border: 4px solid white;
+    border-radius: 50%;
+    margin-top: -75px;
+    background: url('https://images.unsplash.com/photo-1614282141226-6b392f745d8f?crop=entropy&cs=tinysrgb&fit=max&h=150&w=150') center/cover no-repeat;
+  }
+  .details {
+    margin-left: 20px;
+  }
+  .profile-details {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    font-size: 14px;
+  }
+  .profile-details li {
+    margin-bottom: 4px;
+  }
+  .profile-details a {
+    color: #3b5998;
+    text-decoration: none;
+  }
+  .details h1 {
+    margin: 0;
+    font-size: 26px;
+  }
+  .timeline {
+    padding: 20px 0;
+    border-top: 1px solid #ddd;
+  }
+  .post {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .post-header-image {
+  width: 100%;
+  height: auto;
+  border-radius: 5px 5px 0 0;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+  .post h2 {
+    font-size: 18px;
+    margin: 0 0 10px;
+  }
+  .post p {
+    margin: 0;
+  }
+  .friends {
+    padding: 20px 0;
+    border-top: 1px solid #ddd;
+  }
+  .friends h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .friend-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .friend {
+    width: 100px;
+    text-align: center;
+  }
+  .friend-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+    background-position: center;
+    background-size: cover;
+    margin-bottom: 5px;
+  }
+  .friend-name {
+    font-size: 12px;
+  }
+  
+  .friend-notes {
+  margin-top: 5px;
+}
+
+.friend-notes textarea {
+  width: 100%;
+  min-height: 60px;
+  resize: vertical;
+  font-size: 12px;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.notes-toggle {
+  margin-top: 4px;
+  background: #3b5998;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.notes-toggle:hover {
+  background: #2d4373;
+}
+
+  /* Timeline comment styles */
+  .hidden {
+    display: none;
+  }
+  .comment {
+    background: #f0f2f5;
+    border-radius: 5px;
+    padding: 8px;
+    margin: 4px 0;
+    font-size: 13px;
+  }
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  .post-date {
+    font-weight: normal;
+    color: #555;
+    font-size: 12px;
+  }
+  .post-actions {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #555;
+  }
+  .post p {
+  margin-bottom: 1.5em; /* adds spacing between paragraphs */
+}
+  button.comment-toggle {
+    margin-top: 8px;
+    background: #3b5998;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  button.comment-toggle:hover {
+    background: #2d4373;
+  }
+.profile-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.profile-column {
+  flex: 1;
+  min-width: 200px;
+}
+
+.attributes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
+</style>
+</head>
+<body>
+  <header>CthulhuBook</header>
+
+  <div class="profile">
+
+    <!-- Sidebar with toggle button -->
+    <nav class="skills-sidebar" aria-label="All Skills List">
+      <button id="sidebarToggle" onclick="toggleSidebar()">Hide Skills</button>
+	  <h2>Attributes</h2>
+	  <ul>
+      <li class="skill-item" data-name="STR" data-percent="50"></li>
+	  <li class="skill-item" data-name="DEX" data-percent="50"></li>
+	  <li class="skill-item" data-name="INT" data-percent="80"></li>
+	  <li class="skill-item" data-name="APP" data-percent="40"></li>
+	  <li class="skill-item" data-name="POW" data-percent="60"></li>
+	  <li class="skill-item" data-name="EDU" data-percent="70"></li>
+	  <li class="skill-item" data-name="CON" data-percent="60"></li>
+	  <li class="skill-item" data-name="SIZ" data-percent="50"></li>
+    </ul>
+	
+<div class="post">
+  <h2>Sanity, Mythos & Hit Points</h2>
+  <p>
+    Sanity: 
+    <input id="sanityInput" type="number" min="0" max="99" style="width: 50px;">/60 &nbsp;</br>
+
+    Hit Points: 
+    <input id="hpInput" type="number" min="0" max="20" style="width: 50px;"> /11
+  </p>
+</div>
+
+      <h3>Knowledge</h3>
+      <ul>
+        <li class="skill-item" data-name="Accounting" data-percent="5"></li>
+        <li class="skill-item" data-name="Anthropology" data-percent="11"></li>
+        <li class="skill-item" data-name="Appraise" data-percent="5"></li>
+        <li class="skill-item" data-name="Archaeology" data-percent="1"></li>
+        <li class="skill-item" data-name="Art/Craft" data-percent="65"></li>
+        <li class="skill-item" data-name="History" data-percent="35"></li>
+        <li class="skill-item" data-name="Law" data-percent="5"></li>
+        <li class="skill-item" data-name="Library Use" data-percent="40"></li>
+        <li class="skill-item" data-name="Occult" data-percent="85"></li>
+        <li class="skill-item" data-name="Science" data-percent="1"></li>
+      </ul>
+
+      <h3>Combat</h3>
+      <ul>
+        <li class="skill-item" data-name="Fighting (Brawl)" data-percent="35"></li>
+        <li class="skill-item" data-name="Firearms (Handgun)" data-percent="25"></li>
+        <li class="skill-item" data-name="Firearms (Rifle/Shotgun)" data-percent="25"></li>
+        <li class="skill-item" data-name="Dodge" data-percent="35"></li>
+      </ul>
+
+      <h3>Social</h3>
+      <ul>
+        <li class="skill-item" data-name="Charm" data-percent="65"></li>
+        <li class="skill-item" data-name="Fast Talk" data-percent="5"></li>
+        <li class="skill-item" data-name="Intimidate" data-percent="15"></li>
+        <li class="skill-item" data-name="Persuade" data-percent="40"></li>
+        <li class="skill-item" data-name="Psychology" data-percent="50"></li>
+      </ul>
+
+      <h3>Physical</h3>
+      <ul>
+        <li class="skill-item" data-name="Climb" data-percent="20"></li>
+        <li class="skill-item" data-name="Jump" data-percent="20"></li>
+        <li class="skill-item" data-name="Swim" data-percent="25"></li>
+        <li class="skill-item" data-name="Stealth" data-percent="30"></li>
+        <li class="skill-item" data-name="Spot Hidden" data-percent="40"></li>
+        <li class="skill-item" data-name="Survival" data-percent="50"></li>
+        <li class="skill-item" data-name="Track" data-percent="10"></li>
+      </ul>
+
+      <h3>Technical</h3>
+      <ul>
+        <li class="skill-item" data-name="Computer Use" data-percent="5"></li>
+        <li class="skill-item" data-name="Credit Rating" data-percent="15"></li>
+        <li class="skill-item" data-name="Electric Repair" data-percent="10"></li>
+        <li class="skill-item" data-name="First Aid" data-percent="60"></li>
+        <li class="skill-item" data-name="Language (sansk latin greek)" data-percent="16"></li>
+        <li class="skill-item" data-name="Language (Own)" data-percent="Native"></li>
+        <li class="skill-item" data-name="Locksmith" data-percent="1"></li>
+        <li class="skill-item" data-name="Mechanical Repair" data-percent="10"></li>
+        <li class="skill-item" data-name="Operate Heavy Machinery" data-percent="1"></li>
+        <li class="skill-item" data-name="Pilot" data-percent="1"></li>
+        <li class="skill-item" data-name="Psychoanalysis" data-percent="11"></li>
+        <li class="skill-item" data-name="Ride" data-percent="5"></li>
+        <li class="skill-item" data-name="Throw" data-percent="25"></li>
+      </ul>
+    </nav>
+<!-- Outside or after sidebar -->
+<button id="showSidebarTab" class="show-sidebar-tab hidden" onclick="showSidebar()">Show Skills</button>
+    <!-- Main profile content -->
+    <div class="profile-content">
+
+      <div class="cover-photo" style="background: url('jesseBG.jpg') center/cover;"></div>
+      <div class="profile-info">
+	  
+        <div class="profile-pic" style="background: url('jesse.jpg') center/cover;"></div>
+		
+<div class="details">
+ <div class="profile-columns">
+  <div class="profile-column">
+    <h1>Jesse Goodwin</h1>
+    <ul class="profile-details">
+      <li>🏠 Hometown: Red Deer Alberta</li>
+      <li>📍 Currently living: <a href="https://www.johnsonslandingretreat.bc.ca/">spiritual retreat center</a></li>
+      <li>🎂 Date of Birth: Nov 11th 1996</li>
+      <li>💼 Occupation: Guru</li>
+      <li>📞 Phone: (555) 555-5555</li>
+      <li>💍 Marital Status: Single</li>
+	  <li>I PROVIDE THE FOLLOWING SERVICE <li><a href="https://en.wikipedia.org/wiki/Kambo_(drug)">KAMBO</a></li><li><a href="https://en.wikipedia.org/wiki/5-MeO-DMT">BUFFO</a></li></li>
+    </ul>
+  </div>
+
+</div>
+</div>
+      </div>
+
+      <div class="friends">
+        <h2>Allies &amp; NPCs</h2>
+        <div class="friend-list">
+		<a href="elias.html">
+			<div class="friend">
+				<div class="friend-pic" style="background: url('elias.jpg') center/cover;"></div>
+				<div class="friend-name">Elias</div></a>
+				<button class="notes-toggle" onclick="toggleNotes(this)">Notes</button>
+					<div class="friend-notes hidden">
+						<textarea>He never really had a chance</textarea>
+					</div>
+			</div>
+<a href="liam.html">
+          <div class="friend">
+            <div class="friend-pic" style="background: url('liam.jpg') center/cover;"></div>
+            <div class="friend-name">Liam MacNiel</div></a>
+						<button class="notes-toggle" onclick="toggleNotes(this)">Notes</button>
+					<div class="friend-notes hidden">
+						<textarea>This old guy is a good person at heart.  It's a damn shame about what happend with his career.  You can really feel that he did it out of love.  The universe has something good in store for him.</textarea>
+					</div> 
+          </div><a href="tommy.html">
+		  <div class="friend">
+            <div class="friend-pic" style="background: url('tommy.jpg') center/cover;"></div>
+            <div class="friend-name">Tommy Nahanee</div></a>
+						<button class="notes-toggle" onclick="toggleNotes(this)">Notes</button>
+					<div class="friend-notes hidden">
+						<textarea>Amazing that he can speak his peoples language.  He is priceless</textarea>
+					</div> 
+          </div><a href="max.html">
+          <div class="friend">
+            <div class="friend-pic" style="background: url('max.png') center/cover;"></div>
+            <div class="friend-name">Max Power</div></a>
+						<button class="notes-toggle" onclick="toggleNotes(this)">Notes</button>
+					<div class="friend-notes hidden">
+						<textarea>The ego is strong.  he represents everything wrong with the system</textarea>
+					</div> 
+          </div><a href="casey.html">
+		  <div class="friend">
+            <div class="friend-pic" style="background: url('casey.png') center/cover;"></div>
+            <div class="friend-name">Casey Searle</div></a>
+						<button class="notes-toggle" onclick="toggleNotes(this)">Notes</button>
+					<div class="friend-notes hidden">
+						<textarea>A greek tragedy</textarea>
+					</div>
+          </div> 
+		  <a href="mat.html">
+		  <div class="friend">
+            <div class="friend-pic" style="background: url('matt.png') center/cover;"></div>
+            <div class="friend-name">Mat Vogel</div></a>
+						<button class="notes-toggle" onclick="toggleNotes(this)">Notes</button>
+					<div class="friend-notes hidden">
+						<textarea>Something about him is not quite there</textarea>
+					</div>
+          </div> 
+
+        </div>
+      </div>
+      <div class="post">
+        <h2>Goals</h2>
+        <p>I am here to awaken all of humanity.</p>
+      </div>
+      <div class="post">
+        <h2>Who Am I?</h2>
+        <p>Someday the world will see the illusion we live under.  If everybody truly wished to be free and merely stood up the game that keeps us oppressed would crumble to ash.  </p>
+
+
+
+  <p>I was raised in <strong>Red Deer, Alberta</strong>. The kind of place where the sky is big, the rules are bigger, and God watches everything you do with narrowed eyes.</p>
+
+  <p>My parents were the kind of religious that didn’t leave space for questions. Church three times a week. No rock music. No tarot cards. No laughter at the wrong time. We didn't just fear sin — we feared curiosity.</p>
+
+  <p>By 16, that fear broke something in me. Or maybe it woke something up. I left with a backpack, a busted Walkman, and a hunger I couldn't name.</p>
+
+  <p>I landed in chaos — squats, communes, forest raves, sweat lodges. I shared kitchens with witches, slept beside punks, broke bread with anarchists and breathworkers and people who’d shed their names and started again. It was messy. Loud. Beautiful. Painful. Free.</p>
+
+  <p>For the first time, I saw that “God” wasn’t confined to pulpits and punishments. Spirit lived in drum circles. In strangers who offered you tea and didn’t ask your past. In psychedelics and poetry. In people who had nothing but gave everything.</p>
+
+  <p>I lost the tidy answers of my childhood and found better questions.</p>
+
+  <p>And while the world keeps trying to shove me back in a box — religious, political, spiritual, algorithmic <strong>I won’t go</strong>. I burned that box in a beach fire at 19, surrounded by misfits who taught me that real truth doesn't shout — it whispers, it listens, it breathes.</p>
+
+  <p><em>You can call it rebellion.<br>
+  I call it resurrection.</em></p>
+
+      </div>
+      <div class="post">
+	            <div class="post-header">
+            <strong>terrorist chick</strong>
+            <span class="post-date">April 17 2025</span>
+          </div>
+		  check out this rapper.  This guy really gets it.
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JQx5PQ9V9v8?si=J4IWHsRbJ-hm9yUA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+
+      <div class="timeline">
+        <h2 style="margin-bottom:10px;">Timeline</h2>
+
+        <div class="post">
+		  <img src="egmont.jpg" 
+       alt="Post header image" class="post-header-image">
+          <div class="post-header">
+            <strong>Opportunity</strong>
+            <span class="post-date">Jan 17 2025</span>
+          </div>
+          <p>I'm heading away from the <a href="https://www.johnsonslandingretreat.bc.ca/">spiritual retreat center</a> at  moving to Egmont for the next few weeks.  Going to do some work as a fisherman in Egmont.  I am feeling a great pull to the ocean.</P>  I'll be back at the center in the summer.  come and join me for the next shamanic journey.</P>
+		  </p>
+		  <p>
+		  Most of what we call “connection” online isn’t real.</P><p>
+
+It’s a flicker. A projection. A shadow-puppet of who we are — pixel-thin and stripped of context, soul, and breath.</p>
+</br>
+
+You can have thousands of followers and still be unknown. You can shout your truth and still be unheard. Because the screen isn’t a mirror — it’s a flattening filter. It takes your multidimensional self and compresses it into data: likes, scrolls, impressions.
+</br>
+You are not your content.</br>
+You are not your engagement metrics.</br>
+You are not your online persona.</br>
+
+The Hermetic Principle of Correspondence says “As above, so below.” But what about as online, so offline? Because the more we perform ourselves on screens, the harder it gets to be real in person.
+</br>
+It’s easy to mistake visibility for intimacy. But the kind of knowing that heals and transforms — that takes time, silence, vulnerability, and touch. Things the digital world can’t simulate, no matter how clever the algorithm.
+</br>
+I’m not here to disappear — but I’m also not here to reduce myself to a brand.
+</br>
+I’d rather be misunderstood in the forest than perform clarity in a feed designed to reward noise.
+</br>
+Real presence doesn’t live in comments or DMs. It lives in breath, in gaze, in grounded awareness.
+</br>
+So if you don’t see me post for a while — maybe I’m out there remembering I’m more than a profile.
+		  </p>
+          <div class="post-actions">👍 1 Likes · 🔁 0 Shares</div>
+          <button class="comment-toggle" onclick="toggleComments(this)">View Comments (2)</button>
+          <div class="comments hidden">
+            <div class="comment">Anabelle: Good luck Jesse, you should check out the yoga studio in gibsons on your way up.</div>
+          </div>
+        </div>
+
+        <div class="post">
+		  <img src="lizardPost.jpg" 
+       alt="Post header image" class="post-header-image">
+          <div class="post-header">
+            <strong>The cold blooded creatures behind it all</strong>
+            <span class="post-date">January 15, 1922 at 10:00</span>
+          </div>
+          <p>People keep asking me what I think about the lizard people secretly running the government.
+
+The funny thing is: whether it’s lizards, bankers, AI, or old ghosts in new suits… the real question is the same:
+What power are we giving away without realizing it?
+
+Maybe there are cold-blooded minds pulling strings behind the curtain. Or maybe the real reptiles live inside us: fear, greed, and the hunger to control what can’t be controlled.
+
+Either way, the path is the same: wake up, question everything, and remember the only real power they have is the power we hand over in silence.
+
+Stay warm-blooded, friends. </p>
+          <div class="post-actions">👍 15 Likes · 🔁 5 Shares</div>
+          <button class="comment-toggle" onclick="toggleComments(this)">View Comments (0)</button>
+          <div class="comments hidden">
+            <div class="comment">No comments yet.</div>
+          </div>
+        </div>
+		
+        <div class="post">
+
+          <div class="post-header">
+            <strong>I've had enough of the fear.</strong>
+            <span class="post-date">January 15, 1922 at 10:00</span>
+          </div>
+  <p><strong>I’ve had enough of it.</strong> Enough of the signs on every door telling us to fear each other’s breath. Enough of the polite little cloths we wore — not just on our faces, but over our spirits.</p>
+
+  <p>They told us it was about safety. But what I saw was <strong>submission</strong>: a ritual of fear performed daily until it felt normal to see every human being as a walking biohazard.</p>
+
+  <p>And while they preached <em>“saving lives,”</em> humanity burned through <strong>800 billion disposable masks</strong>, dumping mountains of polypropylene into oceans, rivers, forests… all breaking down into microplastics — poisoning the earth our grandchildren will inherit.</p>
+
+  <p>Nobody wants to talk about the fibers we inhaled with every shallow breath. Research shows we breathed in <strong>hundreds of microplastic particles a day</strong> — lining our lungs with plastic dust. But it doesn’t stop there.</p>
+
+  <p>They’ve even found microplastics in our brains: roughly <strong>0.5% of brain weight</strong> in recent autopsies — that’s the equivalent of a spoon’s worth of plastic per person. And masks <strong>contributed</strong> to that burden. These particles crossed the blood‑brain barrier, collected in vessel walls and immune cells — up to <strong>10x more in dementia cases</strong>, and <strong>50% more than just eight years ago</strong>.</p>
+
+
+
+  <p>The <strong>Hermetic Principle of Mentalism</strong> says <em>“All is mind.”</em> But now, our minds have <strong>literal plastic lodged in them</strong>. Someone discovered how to colonize our collective psyche: turning coughs into terror, headlines into paralyzing panic, mandates into virtue — all while we inhaled our own obedience.</p>
+
+  <p><strong>I refuse to reduce humans to hazards.</strong> We are souls, faces, hearts — even if that seems reckless.</p>
+
+  <p><em>Fear is the oldest leash.</em> It tightens when we bow our heads.</p>
+
+  <p>And the real poison wasn’t just in the air — it was in what we let them do to our minds… and literally inside our minds.</p>
+
+          <div class="post-actions">👍 15 Likes · 🔁 5 Shares</div>
+          <button class="comment-toggle" onclick="toggleComments(this)">View Comments (0)</button>
+          <div class="comments hidden">
+            <div class="comment">No comments yet.</div>
+          </div>
+        </div>		
+		
+      </div>
+
+      <div class="post">
+	            <div class="post-header">
+            <strong>Allan Watts is one of the greatest thinkers of the recent history.</strong>
+            <span class="post-date">January 15, 1922 at 10:00</span>
+          </div>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dYSQ1NF1hvw?si=n9sQx2NFE-rwFarZ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+
+      <div class="post">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hL0yfxDe6jE?si=sRkFCZUUaHK69_7l" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+
+    </div> <!-- end profile-content -->
+
+  </div> <!-- end profile -->
+</body>
+</html>
