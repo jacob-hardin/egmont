@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investigator Profile</title>
+
+<script>
+function showSidebar() {
+  const sidebar = document.querySelector('.skills-sidebar');
+  const tab = document.getElementById('showSidebarTab');
+  const toggleBtn = document.getElementById('sidebarToggle');
+  sidebar.classList.remove('hidden-sidebar');
+  tab.classList.add('hidden');
+  toggleBtn.textContent = 'Hide Skills';
+}
+
+function toggleNotes(button) {
+  const notes = button.nextElementSibling;
+  notes.classList.toggle('hidden');
+  button.textContent = notes.classList.contains('hidden') ? 'Notes' : 'Hide Notes';
+}
+
+function toggleSidebar() {
+  const sidebar = document.querySelector('.skills-sidebar');
+  const tab = document.getElementById('showSidebarTab');
+  const toggleBtn = document.getElementById('sidebarToggle');
+  sidebar.classList.toggle('hidden-sidebar');
+  if (sidebar.classList.contains('hidden-sidebar')) {
+    toggleBtn.textContent = 'Show Skills';
+    tab.classList.remove('hidden');
+  } else {
+    toggleBtn.textContent = 'Hide Skills';
+    tab.classList.add('hidden');
+  }
+}
+function toggleComments(button) {
+  const comments = button.nextElementSibling;
+  comments.classList.toggle('hidden');
+  if (comments.classList.contains('hidden')) {
+    button.textContent = button.textContent.replace('Hide', 'View');
+  } else {
+    button.textContent = button.textContent.replace('View', 'Hide');
+  }
+}
+
+function toggleSidebar() {
+  const sidebar = document.querySelector('.skills-sidebar');
+  const toggleBtn = document.getElementById('sidebarToggle');
+  sidebar.classList.toggle('hidden-sidebar');
+  if (sidebar.classList.contains('hidden-sidebar')) {
+    toggleBtn.textContent = 'Show Skills';
+  } else {
+    toggleBtn.textContent = 'Hide Skills';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Calculate half and fifth for each skill in sidebar
+  document.querySelectorAll('.skills-sidebar .skill-item').forEach(skillItem => {
+    const percentRaw = skillItem.dataset.percent;
+    const percent = percentRaw === 'Native' ? percentRaw : parseInt(percentRaw, 10) || 0;
+    const half = percentRaw === 'Native' ? '-' : Math.floor(percent / 2);
+    const fifth = percentRaw === 'Native' ? '-' : Math.floor(percent / 5);
+
+    // Color coding for percent
+    let percentClass = 'low';
+    if (percentRaw !== 'Native') {
+      if (percent >= 70) percentClass = 'high';
+      else if (percent >= 40) percentClass = 'medium';
+    } else {
+      percentClass = 'medium';
+    }
+
+    skillItem.innerHTML = `
+      <span class="skill-name" title="Skill name">${skillItem.dataset.name}</span>
+      <span class="skill-percent ${percentClass}" title="Full percentile">${percentRaw === 'Native' ? 'Native' : percent + '%'}</span>
+      <span class="skill-half" title="Half of full percentile (for hard rolls)">${half}</span>
+      <span class="skill-fifth" title="Fifth of full percentile (for extreme rolls)">${fifth}</span>
+    `;
+  });
+});
+
+
+  const sanityInput = document.getElementById("sanityInput");
+  const mythosInput = document.getElementById("mythosInput");
+  const hpInput = document.getElementById("hpInput");
+
+  // Load from local storage
+  sanityInput.value = localStorage.getItem("jesseSanity") || 45;
+  mythosInput.value = localStorage.getItem("jesseMythos") || 12;
+  hpInput.value = localStorage.getItem("jesseHP") || 10;
+
+  // Save on change
+  sanityInput.addEventListener("input", () => {
+    localStorage.setItem("jesseSanity", sanityInput.value);
+  });
+  mythosInput.addEventListener("input", () => {
+    localStorage.setItem("jesseMythos", mythosInput.value);
+  });
+  hpInput.addEventListener("input", () => {
+    localStorage.setItem("jesseHP", hpInput.value);
+  });
+
+</script>
+
+<style>
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    background: #e9ebee;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background-color: #3b5998;
+    color: white;
+    padding: 10px 20px;
+    font-size: 24px;
+    text-align: center;
+  }
+
+  /* Flex container for sidebar + main content */
+  .profile {
+    display: flex;
+    max-width: 1000px;
+    margin: 20px auto;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+  }
+
+  /* Sidebar with all skills grouped */
+  .skills-sidebar {
+    width: 300px;
+    background: #f5f6f7;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    font-size: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    height: 700px;
+    overflow-y: auto;
+    position: sticky;
+    top: 20px;
+    flex-shrink: 0;
+    transition: width 0.3s ease, padding 0.3s ease;
+  }
+
+.show-sidebar-tab {
+  position: fixed;
+  top: 100px;         /* adjust as needed */
+  left: 0;
+  background: #3b5998;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+.show-sidebar-tab:hover {
+  background: #2d4373;
+}
+.hidden {
+  display: none !important;
+}
+  /* Hidden sidebar style */
+  .hidden-sidebar {
+    width: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+  }
+
+  .skills-sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #3b5998;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+  }
+
+  .skills-sidebar ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0 0 20px 0;
+  }
+
+  .skills-sidebar ul li {
+    margin-bottom: 6px;
+  }
+
+  /* Skill item layout */
+  .skill-item {
+    display: grid;
+    grid-template-columns: 1fr 40px 30px 30px;
+    gap: 6px;
+    font-size: 13px;
+    align-items: center;
+    padding: 2px 0;
+    border-bottom: 1px dotted #ccc;
+  }
+
+  .skill-name {
+    font-weight: 600;
+  }
+
+  .skill-percent.high { color: #008000; }       /* green */
+  .skill-percent.medium { color: #c18400; }    /* orange */
+  .skill-percent.low { color: #b22222; }       /* dark red */
+
+  .skill-percent[title],
+  .skill-half[title],
+  .skill-fifth[title] {
+    cursor: help;
+  }
+
+  /* Main content container inside profile */
+  .profile-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    transition: margin-left 0.3s ease;
+  }
+
+  /* When sidebar hidden, main content full width */
+  .hidden-sidebar + .profile-content {
+    margin-left: 0;
+  }
+
+  /* Toggle button style */
+  #sidebarToggle {
+    margin-bottom: 10px;
+    background: #3b5998;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+  }
+  #sidebarToggle:hover {
+    background: #2d4373;
+  }
+
+  .cover-photo {
+    background: url('https://images.unsplash.com/photo-1581365749336-f203fb31f2d1?crop=entropy&cs=tinysrgb&fit=max&h=200&w=800') center/cover no-repeat;
+    height: 200px;
+  }
+  .profile-info {
+    display: flex;
+    padding: 20px 0;
+  }
+  .profile-pic {
+    width: 150px;
+    height: 150px;
+    border: 4px solid white;
+    border-radius: 50%;
+    margin-top: -75px;
+    background: url('https://images.unsplash.com/photo-1614282141226-6b392f745d8f?crop=entropy&cs=tinysrgb&fit=max&h=150&w=150') center/cover no-repeat;
+  }
+  .details {
+    margin-left: 20px;
+  }
+  .profile-details {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+    font-size: 14px;
+  }
+  .profile-details li {
+    margin-bottom: 4px;
+  }
+  .profile-details a {
+    color: #3b5998;
+    text-decoration: none;
+  }
+  .details h1 {
+    margin: 0;
+    font-size: 26px;
+  }
+  .timeline {
+    padding: 20px 0;
+    border-top: 1px solid #ddd;
+  }
+  .post {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .post-header-image {
+  width: 100%;
+  height: auto;
+  border-radius: 5px 5px 0 0;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+  .post h2 {
+    font-size: 18px;
+    margin: 0 0 10px;
+  }
+  .post p {
+    margin: 0;
+  }
+  .friends {
+    padding: 20px 0;
+    border-top: 1px solid #ddd;
+  }
+  .friends h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .friend-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .friend {
+    width: 100px;
+    text-align: center;
+  }
+  .friend-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+    background-position: center;
+    background-size: cover;
+    margin-bottom: 5px;
+  }
+  .friend-name {
+    font-size: 12px;
+  }
+  
+  .friend-notes {
+  margin-top: 5px;
+}
+
+.friend-notes textarea {
+  width: 100%;
+  min-height: 60px;
+  resize: vertical;
+  font-size: 12px;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.notes-toggle {
+  margin-top: 4px;
+  background: #3b5998;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.notes-toggle:hover {
+  background: #2d4373;
+}
+
+  /* Timeline comment styles */
+  .hidden {
+    display: none;
+  }
+  .comment {
+    background: #f0f2f5;
+    border-radius: 5px;
+    padding: 8px;
+    margin: 4px 0;
+    font-size: 13px;
+  }
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-bottom: 6px;
+  }
+  .post-date {
+    font-weight: normal;
+    color: #555;
+    font-size: 12px;
+  }
+  .post-actions {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #555;
+  }
+  .post p {
+  margin-bottom: 1.5em; /* adds spacing between paragraphs */
+}
+  button.comment-toggle {
+    margin-top: 8px;
+    background: #3b5998;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  button.comment-toggle:hover {
+    background: #2d4373;
+  }
+.profile-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.profile-column {
+  flex: 1;
+  min-width: 200px;
+}
+
+.attributes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}
+</style>
+</head>
+<body>
+  <header>CthulhuBook</header>
+
+  <div class="profile">
+
+    <!-- Sidebar with toggle button -->
+    <nav class="skills-sidebar" aria-label="All Skills List">
+      <button id="sidebarToggle" onclick="toggleSidebar()">Hide Skills</button>
+	  <h2>Attributes</h2>
+	  <ul>
+      <li class="skill-item" data-name="STR" data-percent="50"></li>
+	  <li class="skill-item" data-name="DEX" data-percent="70"></li>
+	  <li class="skill-item" data-name="INT" data-percent="80"></li>
+	  <li class="skill-item" data-name="APP" data-percent="50"></li>
+	  <li class="skill-item" data-name="POW" data-percent="60"></li>
+	  <li class="skill-item" data-name="EDU" data-percent="60"></li>
+	  <li class="skill-item" data-name="CON" data-percent="50"></li>
+	  <li class="skill-item" data-name="SIZ" data-percent="50"></li>
+    </ul>
+	
+<div class="post">
+  <h2>Sanity, Mythos & Hit Points</h2>
+  <p>
+    Sanity: 
+    <input id="sanityInput" type="number" min="0" max="99" style="width: 50px;">/60 &nbsp;</br>
+
+    Hit Points: 
+    <input id="hpInput" type="number" min="0" max="20" style="width: 50px;"> /11
+  </p>
+</div>
+
+  <h3>Knowledge</h3>
+<ul>
+  <li class="skill-item" data-name="Anthropology" data-percent="5"></li>
+  <li class="skill-item" data-name="Appraise" data-percent="10"></li>
+  <li class="skill-item" data-name="Archaeology" data-percent="1"></li>
+  <li class="skill-item" data-name="Art/Craft (Aircraft Maintenance)" data-percent="60"></li>
+  <li class="skill-item" data-name="History" data-percent="30"></li>
+  <li class="skill-item" data-name="Law" data-percent="5"></li>
+  <li class="skill-item" data-name="Library Use" data-percent="40"></li>
+  <li class="skill-item" data-name="Occult" data-percent="5"></li>
+  <li class="skill-item" data-name="Science (Meteorology)" data-percent="20"></li>
+</ul>
+
+<h3>Combat</h3>
+<ul>
+  <li class="skill-item" data-name="Fighting (Brawl)" data-percent="45"></li>
+  <li class="skill-item" data-name="Firearms (Handgun)" data-percent="20"></li>
+  <li class="skill-item" data-name="Firearms (Rifle/Shotgun)" data-percent="30"></li>
+  <li class="skill-item" data-name="Dodge" data-percent="35"></li>
+</ul>
+
+<h3>Social</h3>
+<ul>
+  <li class="skill-item" data-name="Charm" data-percent="15"></li>
+  <li class="skill-item" data-name="Fast Talk" data-percent="10"></li>
+  <li class="skill-item" data-name="Intimidate" data-percent="25"></li>
+  <li class="skill-item" data-name="Persuade" data-percent="40"></li>
+  <li class="skill-item" data-name="Psychology" data-percent="35"></li>
+</ul>
+
+<h3>Physical</h3>
+<ul>
+  <li class="skill-item" data-name="Climb" data-percent="50"></li>
+  <li class="skill-item" data-name="Jump" data-percent="40"></li>
+  <li class="skill-item" data-name="Swim" data-percent="45"></li>
+  <li class="skill-item" data-name="Stealth" data-percent="30"></li>
+  <li class="skill-item" data-name="Spot Hidden" data-percent="60"></li>
+  <li class="skill-item" data-name="Survival (Sea)" data-percent="55"></li>
+  <li class="skill-item" data-name="Track" data-percent="15"></li>
+</ul>
+
+<h3>Technical</h3>
+<ul>
+  <li class="skill-item" data-name="Computer Use" data-percent="15"></li>
+  <li class="skill-item" data-name="Credit Rating" data-percent="20"></li>
+  <li class="skill-item" data-name="Electric Repair" data-percent="30"></li>
+  <li class="skill-item" data-name="First Aid" data-percent="50"></li>
+  <li class="skill-item" data-name="Language (French)" data-percent="20"></li>
+  <li class="skill-item" data-name="Language (Own - English)" data-percent="Native"></li>
+  <li class="skill-item" data-name="Mechanical Repair" data-percent="70"></li>
+  <li class="skill-item" data-name="Operate Heavy Machinery" data-percent="45"></li>
+  <li class="skill-item" data-name="Pilot (Plane)" data-percent="80"></li>
+  <li class="skill-item" data-name="Pilot (Boat)" data-percent="45"></li>
+  <li class="skill-item" data-name="Throw" data-percent="30"></li>
+</ul>
+
+    </nav>
+<!-- Outside or after sidebar -->
+<button id="showSidebarTab" class="show-sidebar-tab hidden" onclick="showSidebar()">Show Skills</button>
+    <!-- Main profile content -->
+    <div class="profile-content">
+
+      <div class="cover-photo" style="background: url('liamBG.jpg') center/cover;"></div>
+      <div class="profile-info">
+	  
+        <div class="profile-pic" style="background: url('liam.jpg') center/cover;"></div>
+		
+<div class="details">
+ <div class="profile-columns">
+  <div class="profile-column">
+    <h1>Liam MacNiel</h1>
+    <ul class="profile-details">
+      <li>🏠 Hometown: Halifax</li>
+      <li>📍 Currently living: Mobile</li>
+      <li>🎂 Date of Birth: 1985</li>
+      <li>💼 Occupation: former pilot</li>
+      <li>📞 Phone: (555) 555-5555</li>
+      <li>💍 Marital Status: Single</li>
+    </ul>
+  </div>
+
+</div>
+</div>
+      </div>
+
+      <div class="friends">
+        <h2>Allies &amp; NPCs</h2>
+        <div class="friend-list">
+		<a href="elias.html">
+			<div class="friend">
+				<div class="friend-pic" style="background: url('elias.jpg') center/cover;"></div>
+				<div class="friend-name">Elias</div></a>
+				<button class="notes-toggle" onclick="toggleNotes(this)">Notes</button>
+					<div class="friend-notes hidden">
+						<textarea>He never really had a chance</textarea>
+					</div>
+			</div>
+<a href="jesse.html">
+          <div class="friend">
+            <div class="friend-pic" style="background: url('jesse.jpg') center/cover;"></div>
+            <div class="friend-name">Jesse Goodwin</div></a>
+						<button class="notes-toggle" onclick="toggleNotes(this)">Notes</button>
+					<div class="friend-notes hidden">
+						<textarea></textarea>
+					</div> 
+          </div><a href="tommy.html">
+		  <div class="friend">
+            <div class="friend-pic" style="background: url('tommy.jpg') center/cover;"></div>
+            <div class="friend-name">Tommy Nahanee</div></a>
+						<button class="notes-toggle" onclick="toggleNotes(this)">Notes</button>
+					<div class="friend-notes hidden">
+						<textarea></textarea>
+					</div> 
+          </div><a href="max.html">
+          <div class="friend">
+            <div class="friend-pic" style="background: url('max.png') center/cover;"></div>
+            <div class="friend-name">Max Power</div></a>
+						<button class="notes-toggle" onclick="toggleNotes(this)">Notes</button>
+					<div class="friend-notes hidden">
+						<textarea></textarea>
+					</div> 
+          </div><a href="casey.html">
+		  <div class="friend">
+            <div class="friend-pic" style="background: url('casey.png') center/cover;"></div>
+            <div class="friend-name">Casey Searle</div></a>
+						<button class="notes-toggle" onclick="toggleNotes(this)">Notes</button>
+					<div class="friend-notes hidden">
+						<textarea></textarea>
+					</div>
+          </div> 
+		  <a href="mat.html">
+		  <div class="friend">
+            <div class="friend-pic" style="background: url('matt.png') center/cover;"></div>
+            <div class="friend-name">Mat Vogel</div></a>
+						<button class="notes-toggle" onclick="toggleNotes(this)">Notes</button>
+					<div class="friend-notes hidden">
+						<textarea></textarea>
+					</div>
+          </div> 
+
+        </div>
+      </div>
+      <div class="post">
+        <h2>Goals</h2>
+        <p></p>
+      </div>
+      <div class="post">
+        <h2>Who Am I?</h2>
+      </div>
+	  
+	  <div class="post">
+  <div class="post-header">
+    <strong>The fog was so thick this morning, I could barely see the bow from the stern.</strong>
+    <span class="post-date">July 12, 2025 at 06:14</span>
+  </div>
+
+  <p>It reminded me of flying over Labrador in winter. Instruments blind, everything white. Difference is, up there I trusted my altimeter. Out here, I just hope nothing’s watching from the shoreline.</p>
+
+  <div class="post-actions">👍 36 Likes · 🔁 9 Shares</div>
+  <button class="comment-toggle" onclick="toggleComments(this)">View Comments (3)</button>
+  <div class="comments hidden">
+    <div class="comment"><strong>WestCoastClaire:</strong> That kind of fog always makes me feel like I'm not alone.</div>
+    <div class="comment"><strong>SaltyNick:</strong> You get used to it. Or you learn to move quieter.</div>
+    <div class="comment"><strong>Ace_Jane:</strong> Love your posts, Liam. You see the world different.</div>
+  </div>
+</div>
+
+<div class="post">
+  <div class="post-header">
+    <strong>I still wake up thinking I’ve got a pre-flight checklist to run.</strong>
+    <span class="post-date">June 29, 2025 at 04:38</span>
+  </div>
+
+  <p>Then the diesel engine kicks in and the smell of brine reminds me where I am. Funny how habits don’t die, even when the life they came from does.</p>
+
+  <div class="post-actions">👍 42 Likes · 🔁 13 Shares</div>
+  <button class="comment-toggle" onclick="toggleComments(this)">View Comments (4)</button>
+  <div class="comments hidden">
+    <div class="comment"><strong>Riley_Anchors:</strong> You’ll get back in the air one day. I believe it.</div>
+    <div class="comment"><strong>Kat_North:</strong> The ocean has its own checklists. You’re still navigating.</div>
+    <div class="comment"><strong>FlyerDad:</strong> Still got your wings, brother. Just tucked away for now.</div>
+    <div class="comment"><strong>Shaun_L:</strong> Can’t imagine what it’s like. Respect for pushing through.</div>
+  </div>
+</div>
+
+<div class="post">
+  <div class="post-header">
+    <strong>Someone left a dead herring on my bunk. No one’s owning up to it.</strong>
+    <span class="post-date">June 15, 2025 at 23:09</span>
+  </div>
+
+  <p>Could be a joke. Could be something else. This coast has its own sense of humor, and it don’t always feel friendly.</p>
+
+  <div class="post-actions">👍 19 Likes · 🔁 7 Shares</div>
+  <button class="comment-toggle" onclick="toggleComments(this)">View Comments (2)</button>
+  <div class="comments hidden">
+    <div class="comment"><strong>DeckhandMoe:</strong> That’s not a prank. That’s a warning, man.</div>
+    <div class="comment"><strong>CoastalFae:</strong> Burn cedar. Leave salt by the door. Trust me.</div>
+  </div>
+</div>
+
+<div class="post">
+  <div class="post-header">
+    <strong>Sometimes I think I hear my dad's voice when I’m working the hydraulics.</strong>
+    <span class="post-date">May 3, 2025 at 18:44</span>
+  </div>
+
+  <p>Not words. Just his tone. Like he’s watching to see if I’ll fix it right. The boat’s not a plane, but it’s still a machine, and I treat it like it matters.</p>
+
+  <div class="post-actions">👍 27 Likes · 🔁 6 Shares</div>
+  <button class="comment-toggle" onclick="toggleComments(this)">View Comments (3)</button>
+  <div class="comments hidden">
+    <div class="comment"><strong>OldIronTools:</strong> Sounds like he raised you right.</div>
+    <div class="comment"><strong>MapleSkies:</strong> The Murphy Moose is still waiting. Don’t forget it.</div>
+    <div class="comment"><strong>Nfld_Mechanic:</strong> You ever need parts shipped from back home, I got you.</div>
+  </div>
+</div>
+
+<div class="post">
+  <div class="post-header">
+    <strong>There’s a plane in a barn in Newfoundland I haven’t seen in 7 years.</strong>
+    <span class="post-date">February 10, 2025 at 21:52</span>
+  </div>
+
+  <p>My old man started building it. Said it’d take us anywhere. He never finished. Now it waits. And so do I.</p>
+
+  <div class="post-actions">👍 61 Likes · 🔁 20 Shares</div>
+  <button class="comment-toggle" onclick="toggleComments(this)">View Comments (5)</button>
+  <div class="comments hidden">
+    <div class="comment"><strong>EastCoastFlyers:</strong> The Moose waits for the right hands. Yours.</div>
+    <div class="comment"><strong>Mira_Winds:</strong> You should go back. Finish what he started.</div>
+    <div class="comment"><strong>SamPilots:</strong> Got blueprints if you need them. We all got dreams in barns.</div>
+    <div class="comment"><strong>Cedar_Pines:</strong> Maybe the plane’s calling you back. You listening?</div>
+    <div class="comment"><strong>TrueNorthJay:</strong> You can still fly, Liam. Doesn’t have to be with wings.</div>
+  </div>
+</div>
+<div class="post">
+  <div class="post-header">
+    <strong>I didn’t crash. I didn’t mess up. I just failed a test.</strong>
+    <span class="post-date">March 18, 2025 at 07:26</span>
+  </div>
+
+  <p>A routine check. Heart murmur they missed before. One box unchecked, and that was it. License pulled. Years of flying—gone in the time it takes to say "you're grounded."</p>
+
+  <div class="post-actions">👍 54 Likes · 🔁 17 Shares</div>
+  <button class="comment-toggle" onclick="toggleComments(this)">View Comments (6)</button>
+  <div class="comments hidden">
+    <div class="comment"><strong>SkyeMacNeil:</strong> You didn’t fail anything, Liam. The system did.</div>
+    <div class="comment"><strong>Grinder_Jet:</strong> Bureaucracy doesn't know the heart it breaks. Keep your head up.</div>
+    <div class="comment"><strong>MarlaEast:</strong> Still the best damn pilot I ever flew with.</div>
+    <div class="comment"><strong>CapeWind:</strong> One day you’ll fly again, in your own way.</div>
+    <div class="comment"><strong>DocksideJo:</strong> You’re more than your license. Don’t forget that.</div>
+    <div class="comment"><strong>UncleNeil:</strong> Your dad would’ve told 'em to shove that paperwork. Proud of you, boy.</div>
+  </div>
+</div>
+	  
+	  
+    </div> <!-- end profile-content -->
+
+  </div> <!-- end profile -->
+</body>
+</html>
+
